@@ -1,61 +1,71 @@
+StockSent
 
-### Core Components
+StockSent is an iOS application built with SwiftUI. It allows users to track stock tickers, fetch recent news, and view sentiment analysis based on news headlines. The app uses Firebase Authentication, Cloud Firestore, a Cloud Function for sentiment processing, and a GPT-based sentiment analyzer for further refinement.
 
-- **FirestoreManager**  
-  Handles storing and retrieving user watchlist data from Firestore.
+Overview
 
-- **NewsFetcher**  
-  Sends requests to the GNews API and decodes article data.
+Users can log in or sign up, add stock tickers to a personal watchlist, and view sentiment results for each ticker. The app processes sentiment using both a backend Cloud Function and an additional AI pass. A suggestions page ranks the user’s watchlist based on sentiment scores.
 
-- **SentimentFetcher**  
-  Fetches sentiment results from the Cloud Function, processes them through the OpenAI-based analyzer, and publishes results to the UI.
+Features
 
-- **SuggestionFetcher**  
-  Fetches the user's watchlist, retrieves sentiment for each ticker, computes scores, and returns sorted recommendation data.
+Authentication:
+Users can create an account or log in with email and password. Anonymous login is used as a fallback.
 
-### Data Models
-- `SentimentResult`
-- `Article`
-- `StockSentiment`
-- `NewsResponse`
+Watchlist:
+Users can add stock tickers to their watchlist. The list is stored in Firestore and reloaded whenever it is updated.
 
-## Technologies Used
+News Fetching:
+The app uses the GNews API to fetch up to ten recent news articles for each stock symbol. Headlines and descriptions are displayed in the interface.
 
-| Technology | Purpose |
-|-----------|---------|
-| SwiftUI | Application UI and layout |
-| FirebaseAuth | User authentication |
-| Firestore | Watchlist data storage |
-| Cloud Functions | Backend sentiment processing |
-| OpenAI | GPT-based sentiment refinement |
-| Swift Charts | Visualization of sentiment data |
-| URLSession | Networking |
+Sentiment Analysis:
+A Firebase Cloud Function analyzes headlines and returns sentiment labels. A custom GPT-based analyzer refines these results. The app then displays counts of positive, neutral, and negative sentiment using Swift Charts.
 
-## Setup and Installation
+Suggestions:
+The app evaluates every stock in the user’s watchlist, computes sentiment scores, assigns a recommendation label such as Buy, Neutral, or Avoid, and displays top-ranked stocks along with a comparison chart.
 
-1. Clone the repository.
-2. Open the Xcode project file.
-3. Add your `GoogleService-Info.plist` file to enable Firebase.
-4. Replace API keys:
-   - Insert your GNews API key in `NewsFetcher`.
-   - Ensure the Cloud Function URL matches your deployment.
-5. Build and run the app on a simulator or physical device.
+Architecture
 
-## Usage
+LoginView handles authentication.
+ContentView manages the watchlist.
+SentimentViewtwo shows sentiment data for a selected ticker.
+SuggestionsView provides ranked sentiment results for the entire watchlist.
+FirestoreManager handles read and write operations for Firestore.
+NewsFetcher retrieves external news articles.
+SentimentFetcher calls the Cloud Function and performs the AI sentiment pass.
+SuggestionFetcher combines sentiment results for all watchlist items.
 
-1. Launch the app and log in or create an account.
-2. Add stock tickers to your watchlist.
-3. Tap a ticker to view a sentiment summary and related headlines.
-4. Open the Suggestions page to view sentiment-based recommendations across your watchlist.
+Setup Instructions
 
-## Future Enhancements
+1. Clone or download the project folder.
+2. Open the project in Xcode.
+3. Add your GoogleService-Info.plist file to enable Firebase.
+4. Replace the GNews API key inside NewsFetcher.
+5. Add your Firebase Cloud Function URL where sentiment is fetched.
 
-- Integration with live price data.
-- Trending sentiment over time.
-- Notifications for sentiment changes.
-- Enhanced error handling and retry logic.
-- User-customizable preferences for APIs and recommended metrics.
+Important Cloud Function Step:
 
-## License
+After deploying the Cloud Function, copy the URL from the deployment output. It will look like this:
 
-This project is for educational and personal use. A license may be added in the future.
+https://us-central1-YOUR_PROJECT.cloudfunctions.net/getStockNewsSentiment
+
+Paste this URL into your app wherever the sentiment endpoint is referenced.
+
+Running the App
+
+1. Build and run in Xcode.
+2. Log in or create an account.
+3. Add stock tickers such as TSLA or AAPL.
+4. Select a ticker to view sentiment details.
+5. Open Suggestions to see rankings based on sentiment.
+
+Future Improvements
+
+- Integration with real-time stock price data
+- Historical sentiment graphs
+- Push notifications for sentiment changes
+- User-adjustable recommendation settings
+- Improved error handling
+
+License
+
+This project is intended for personal and educational use.
